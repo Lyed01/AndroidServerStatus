@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/ipEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/minecraft_font"
+        android:hint="Enter server IP" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal">
+
+        <!-- ImageButton -->
+
+        <!-- TextView encima del botón -->
+        <ImageButton
+            android:id="@+id/addServerButton"
+            style="@style/MinecraftImageButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:contentDescription="@string/add_server" />
+
+        <TextView
+            android:id="@+id/text_above_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:fontFamily="@font/minecraft_font"
+            android:gravity="center"
+            android:shadowColor="#80000000"
+            android:shadowDx="3"
+            android:shadowDy="2"
+            android:shadowRadius=".2"
+            android:text="Add"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+</LinearLayout>

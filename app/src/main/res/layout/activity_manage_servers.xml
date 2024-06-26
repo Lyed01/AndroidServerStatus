@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Fondo de la actividad -->
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/backgroundirt"
+            android:scaleType="centerCrop"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/topBorderImageView"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/header" />
+        <!-- RecyclerView para mostrar la lista de servidores -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@id/topBorderImageView"
+            android:fontFamily="@font/minecraft_font"
+            android:id="@+id/serversRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="10dp"
+            android:paddingVertical="0dp"
+            android:background="@android:color/transparent" />
+
+        <!-- GifImageView para mostrar el GIF de carga -->
+
+        <RelativeLayout
+
+
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="632dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="46dp"
+            android:gravity="center_horizontal">
+
+            <!-- ImageButton -->
+            <ImageButton
+                android:id="@+id/addServerButton"
+                style="@style/MinecraftImageButtonStyle"
+                android:layout_width="125dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/add_server" />
+
+            <!-- TextView encima del botón -->
+            <TextView
+                android:id="@+id/text_above_button"
+                android:layout_width="124dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:fontFamily="@font/minecraft_font"
+                android:gravity="center"
+                android:shadowColor="#80000000"
+                android:shadowDx="3"
+                android:shadowDy="2"
+                android:shadowRadius=".2"
+                android:text="Add Server"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/loadingImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

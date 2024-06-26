@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "699462307354",
+    "project_id": "minecraftserverstatus-1410b",
+    "storage_bucket": "minecraftserverstatus-1410b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699462307354:android:2ea48e1954a4945be50ba3",
+        "android_client_info": {
+          "package_name": "com.example.minecraftserverstatus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "699462307354-6b9ebgu56qe0q5dlo9lsh40cctpog1km.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.minecraftserverstatus",
+            "certificate_hash": "48c651cd08194f9ed565de871788a10103f3b28a"
+          }
+        },
+        {
+          "client_id": "699462307354-6bieccgapcnn91apcljtpjtvakkdm8rp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZF3kyCdKd0XHC_wInvVdCpqI5SgTkBeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699462307354-6bieccgapcnn91apcljtpjtvakkdm8rp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
