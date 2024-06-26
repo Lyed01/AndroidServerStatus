@@ -16,14 +16,20 @@
         tools:ignore="ExtraText"
         tools:targetApi="tiramisu">
 
-        <!-- com.example.minecraftserverstatus.ui.LoginActivity -->
+        <!-- SplashActivity -->
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- LoginActivity -->
+        <activity
+            android:name=".ui.LoginActivity"
+            android:exported="true">
         </activity>
 
         <!-- RegisterActivity -->
@@ -37,7 +43,7 @@
             android:exported="true"
             android:theme="@style/CustomDialogTheme" />
 
-        <!-- com.example.minecraftserverstatus.ui.com.example.minecraftserverstatus.ui.ManageServersActivity -->
+        <!-- ManageServersActivity -->
         <activity
             android:name=".ui.ManageServersActivity"
             android:exported="true"
