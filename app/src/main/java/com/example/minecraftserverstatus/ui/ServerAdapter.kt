@@ -124,7 +124,7 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
     }
 
     private fun toggleFavoriteState(server: Server) {
-        if (viewModel.isServerFavorite(server.ip ?: "")) {
+        if (server.isFavorite) {
             viewModel.removeServerFromFavorites(server)
         } else {
             viewModel.addServerToFavorites(server)
@@ -132,10 +132,11 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
     }
 
     private fun updateFavoriteButtonState(favoriteButton: ImageView, server: Server) {
-        if (viewModel.isServerFavorite(server.ip ?: "")) {
+        if (server.isFavorite) {
             favoriteButton.setImageResource(R.drawable.ic_star_filled)
         } else {
             favoriteButton.setImageResource(R.drawable.ic_star_border)
         }
     }
 }
+

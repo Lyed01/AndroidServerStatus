@@ -47,6 +47,7 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
                 val success = serverRepository.addServerToFavorites(server)
                 if (success) {
                     favoriteServers[server.ip ?: ""] = true
+                    server.isFavorite = true
                     updateServerInList(server)
                     Log.d("ServerViewModel", "Server added to favorites successfully")
                 } else {
@@ -65,6 +66,7 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
                 val success = serverRepository.removeServerFromFavorites(server)
                 if (success) {
                     favoriteServers.remove(server.ip)
+                    server.isFavorite = false
                     updateServerInList(server)
                     Log.d("ServerViewModel", "Server removed from favorites successfully")
                 } else {
@@ -111,7 +113,8 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
                             players = updatedServer.players ?: server.players,
                             plugins = updatedServer.plugins ?: server.plugins,
                             mods = updatedServer.mods ?: server.mods,
-                            info = updatedServer.info ?: server.info
+                            info = updatedServer.info ?: server.info,
+                            isFavorite = isServerFavorite(server.ip ?: "") // Set isFavorite based on current state
                         )
 
                         val updatedList = _servers.value?.toMutableList() ?: mutableListOf()
@@ -150,7 +153,10 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
 
             try {
                 val server = serverRepository.getServer(ip)
-                server?.let { addServerToList(it) }
+                server?.let {
+                    it.isFavorite = isServerFavorite(it.ip ?: "")
+                    addServerToList(it)
+                }
                 onComplete()
             } catch (e: Exception) {
                 Log.e("ServerViewModel", "Error adding server", e)
@@ -197,6 +203,9 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
     // Función para agregar servidores favoritos a la lista
     private fun addFavoriteServersToList(servers: List<Server>) {
         val currentServers = _servers.value?.toMutableList() ?: mutableListOf()
+        servers.forEach {
+            it.isFavorite = true
+        }
         currentServers.addAll(servers)
         _servers.postValue(currentServers)
     }

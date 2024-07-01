@@ -21,6 +21,7 @@ data class Server(
     var plugins: List<Plugin>? = null,
     var mods: List<Mod>? = null,
     var info: Info? = null,
+    var isFavorite: Boolean = false
 ) {
     data class Debug(
         val ping: Boolean,
