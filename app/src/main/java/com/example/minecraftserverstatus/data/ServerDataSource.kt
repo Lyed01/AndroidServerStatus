@@ -2,6 +2,7 @@ package com.example.minecraftserverstatus.data
 
 import android.util.Log
 import com.example.minecraftserverstatus.model.Server
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import retrofit2.Retrofit
@@ -12,6 +13,7 @@ class ServerDataSource {
         private const val API_BASE_URL = "https://api.mcsrvstat.us/"
         private val api: ServerAPI
         private val db = FirebaseFirestore.getInstance()
+        private val auth = FirebaseAuth.getInstance()
 
         init {
             api = Retrofit.Builder()
@@ -19,6 +21,10 @@ class ServerDataSource {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ServerAPI::class.java)
+        }
+
+        private fun getUserId(): String? {
+            return auth.currentUser?.uid
         }
 
         suspend fun getServer(ip: String): Server? {
@@ -33,8 +39,10 @@ class ServerDataSource {
         }
 
         suspend fun addServerToFavorites(server: Server): Boolean {
+            val userId = getUserId() ?: return false
             return try {
-                db.collection("favorite_servers").document(server.ip ?: "").set(server).await()
+                db.collection("users").document(userId).collection("favorite_servers")
+                    .document(server.ip ?: "").set(server).await()
                 true
             } catch (e: Exception) {
                 Log.e("ServerDataSource", "Error adding server to favorites", e)
@@ -43,8 +51,10 @@ class ServerDataSource {
         }
 
         suspend fun removeServerFromFavorites(server: Server): Boolean {
+            val userId = getUserId() ?: return false
             return try {
-                db.collection("favorite_servers").document(server.ip ?: "").delete().await()
+                db.collection("users").document(userId).collection("favorite_servers")
+                    .document(server.ip ?: "").delete().await()
                 true
             } catch (e: Exception) {
                 Log.e("ServerDataSource", "Error removing server from favorites", e)
@@ -53,10 +63,12 @@ class ServerDataSource {
         }
 
         suspend fun getFavoriteServers(): List<Server> {
+            val userId = getUserId() ?: return emptyList()
             val favoriteServers = mutableListOf<Server>()
 
             try {
-                val snapshot = db.collection("favorite_servers").get().await()
+                val snapshot = db.collection("users").document(userId)
+                    .collection("favorite_servers").get().await()
                 for (document in snapshot.documents) {
                     val server = document.toObject(Server::class.java)
                     server?.let { favoriteServers.add(it) }
