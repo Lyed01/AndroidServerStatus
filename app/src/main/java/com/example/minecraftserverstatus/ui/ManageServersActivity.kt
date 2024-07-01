@@ -95,12 +95,12 @@ class ManageServersActivity : AppCompatActivity() {
     }
 
     // Manejar el resultado de la actividad AddServerActivity
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_SERVER_REQUEST_CODE && resultCode == RESULT_OK) {
             data?.let {
                 val ip = it.getStringExtra("ip") ?: return@let
-                val name = it.getStringExtra("name") ?: "Server"
 
                 // Mostrar GIF de carga
                 loadingImageView.visibility = View.VISIBLE

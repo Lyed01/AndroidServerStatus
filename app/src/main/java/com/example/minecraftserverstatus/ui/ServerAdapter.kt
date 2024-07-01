@@ -36,11 +36,12 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
         return ServerViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ServerViewHolder, position: Int) {
         val server = servers[position]
 
         holder.ipTextView.text = server.hostname ?: "N/A"
-        holder.addressTextView.text = server.ip ?: "N/A"
+        holder.addressTextView.text = server.ip
         holder.versionTextView.text = server.version ?: "N/A"
         holder.playersTextView.text = "Online: ${server.players?.online ?: 0}/${server.players?.max ?: 0}"
 
@@ -94,7 +95,7 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
             .setItems(options) { dialog, which ->
                 when (which) {
                     0 -> showEditDialog(server)
-                    1 -> viewModel.deleteServer(server.ip ?: "")
+                    1 -> viewModel.deleteServer(server.ip)
                 }
                 dialog.dismiss()
             }
@@ -139,4 +140,3 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
         }
     }
 }
-

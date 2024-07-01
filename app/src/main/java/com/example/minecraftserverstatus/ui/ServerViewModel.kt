@@ -10,7 +10,6 @@ import com.example.minecraftserverstatus.model.Server
 import kotlinx.coroutines.launch
 
 class ServerViewModel(private val serverRepository: ServerRepository) : ViewModel() {
-
     constructor() : this(ServerRepository()) {
         // Puedes inicializar el repositorio con un valor predeterminado si es necesario
     }
@@ -23,7 +22,6 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    // Mapa mutable para almacenar los servidores favoritos
     private val favoriteServers = mutableMapOf<String, Boolean>()
 
     init {
@@ -32,13 +30,18 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
 
         viewModelScope.launch {
             try {
-                val favoriteServers = serverRepository.fetchFavoriteServers()
-                addFavoriteServersToList(favoriteServers)
+                val favoriteServersFromFirebase = serverRepository.fetchFavoriteServers()
+                favoriteServersFromFirebase.forEach { server ->
+                    favoriteServers[server.ip] = true
+                }
+                addFavoriteServersToList(favoriteServersFromFirebase)
             } catch (e: Exception) {
                 Log.e("ServerViewModel", "Error fetching favorite servers", e)
             }
         }
     }
+
+
 
     // Función para agregar un servidor a favoritos
     fun addServerToFavorites(server: Server) {
@@ -95,6 +98,10 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
                     val identifier = if (!server.hostname.isNullOrEmpty()) server.hostname else server.ip ?: ""
                     val updatedServer = identifier?.let { serverRepository.getServer(it) }
 
+                    updatedServer?.copy(
+                        isFavorite = favoriteServers[updatedServer.ip] ?: false
+                    ) ?: server
+
                     if (updatedServer != null) {
                         val updatedServerWithDefaults = server.copy(
                             online = updatedServer.online,
@@ -114,7 +121,6 @@ class ServerViewModel(private val serverRepository: ServerRepository) : ViewMode
                             plugins = updatedServer.plugins ?: server.plugins,
                             mods = updatedServer.mods ?: server.mods,
                             info = updatedServer.info ?: server.info,
-                            isFavorite = isServerFavorite(server.ip ?: "") // Set isFavorite based on current state
                         )
 
                         val updatedList = _servers.value?.toMutableList() ?: mutableListOf()
