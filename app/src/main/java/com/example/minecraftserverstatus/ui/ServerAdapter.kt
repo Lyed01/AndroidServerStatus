@@ -1,4 +1,5 @@
 package com.example.minecraftserverstatus.ui
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -24,28 +25,26 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
         val versionTextView: TextView = view.findViewById(R.id.version_textview)
         val playersTextView: TextView = view.findViewById(R.id.players_textview)
         val motdTextView: TextView = view.findViewById(R.id.motd_textview)
+        val favoriteButton: ImageView = view.findViewById(R.id.favoriteButton)
     }
 
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerViewHolder {
-
         context = parent.context
         val view = LayoutInflater.from(context).inflate(R.layout.item_server, parent, false)
         return ServerViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ServerViewHolder, position: Int) {
-
         val server = servers[position]
 
-        // Mostrar detalles del servidor
         holder.ipTextView.text = server.hostname ?: "N/A"
         holder.addressTextView.text = server.ip ?: "N/A"
         holder.versionTextView.text = server.version ?: "N/A"
         holder.playersTextView.text = "Online: ${server.players?.online ?: 0}/${server.players?.max ?: 0}"
 
-        // Configurar el icono del servidor si está disponible
+        // Set server icon
         server.icon?.let { iconBase64 ->
             try {
                 val imageBytes = Base64.decode(iconBase64.split(",")[1], Base64.DEFAULT)
@@ -58,19 +57,22 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
             holder.serverIcon.setImageResource(R.drawable.default_server_icon)
         }
 
-        // Mostrar el motd con HTML si está disponible
+        // Set MOTD with HTML if available
         val motdHtml = server.motd?.html?.joinToString("<br>") ?: "N/A"
         holder.motdTextView.text = Html.fromHtml(motdHtml, Html.FROM_HTML_MODE_COMPACT)
 
-        // Manejar clics en los elementos de la lista
-        holder.itemView.setOnClickListener {
+        // Set favorite button state
+        updateFavoriteButtonState(holder.favoriteButton, server)
 
-            // Mostrar el Dialog con los detalles del servidor
-            val dialog = ServerDetailDialog(context, server)
-            dialog.show()
+        // Handle click events
+        holder.itemView.setOnClickListener {
+            showServerDetailDialog(server)
         }
 
-        // Manejar clics largos para editar o eliminar el servidor
+        holder.favoriteButton.setOnClickListener {
+            toggleFavoriteState(server)
+        }
+
         holder.itemView.setOnLongClickListener {
             showEditDeleteDialog(server)
             true
@@ -79,55 +81,61 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
 
     override fun getItemCount(): Int = servers.size
 
-    // Función para actualizar los datos del adaptador
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newServers: List<Server>) {
         servers = newServers
         notifyDataSetChanged()
     }
 
-    // Función para mostrar el AlertDialog de editar/eliminar servidor
     private fun showEditDeleteDialog(server: Server) {
         val options = arrayOf("Editar", "Eliminar")
         AlertDialog.Builder(context)
             .setTitle("Selecciona una opción")
             .setItems(options) { dialog, which ->
                 when (which) {
-                    0 -> {
-                        // Editar servidor
-                        showEditDialog(server)
-                    }
-                    1 -> {
-                        // Eliminar servidor
-                        viewModel.deleteServer(server.ip ?: "")
-                    }
+                    0 -> showEditDialog(server)
+                    1 -> viewModel.deleteServer(server.ip ?: "")
                 }
                 dialog.dismiss()
             }
             .show()
     }
 
-    // Función para mostrar el diálogo de edición de IP
     private fun showEditDialog(server: Server) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Editar IP")
-
-        // Set up the input
         val input = EditText(context)
         builder.setView(input)
-
-        // Set up the buttons
         builder.setPositiveButton("OK") { _, _ ->
             val newIp = input.text.toString().trim()
             if (newIp.isNotEmpty()) {
-                // Mostrar GIF de carga
                 viewModel.editServer(server, newIp)
             }
         }
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.cancel()
         }
-
         builder.show()
+    }
+
+    private fun showServerDetailDialog(server: Server) {
+        val dialog = ServerDetailDialog(context, server)
+        dialog.show()
+    }
+
+    private fun toggleFavoriteState(server: Server) {
+        if (viewModel.isServerFavorite(server.ip ?: "")) {
+            viewModel.removeServerFromFavorites(server)
+        } else {
+            viewModel.addServerToFavorites(server)
+        }
+    }
+
+    private fun updateFavoriteButtonState(favoriteButton: ImageView, server: Server) {
+        if (viewModel.isServerFavorite(server.ip ?: "")) {
+            favoriteButton.setImageResource(R.drawable.ic_star_filled)
+        } else {
+            favoriteButton.setImageResource(R.drawable.ic_star_border)
+        }
     }
 }

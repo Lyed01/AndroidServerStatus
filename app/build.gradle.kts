@@ -79,7 +79,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.play.services.auth)
-    implementation(libs.androidx.swiperefreshlayout) // Firebase Auth dependency
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.firebase.firestore.ktx) // Firebase Auth dependency
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

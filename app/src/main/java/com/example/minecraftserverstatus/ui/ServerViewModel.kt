@@ -9,9 +9,11 @@ import com.example.minecraftserverstatus.data.ServerRepository
 import com.example.minecraftserverstatus.model.Server
 import kotlinx.coroutines.launch
 
-class ServerViewModel : ViewModel() {
+class ServerViewModel(private val serverRepository: ServerRepository) : ViewModel() {
 
-    private val serverRepository = ServerRepository()
+    constructor() : this(ServerRepository()) {
+        // Puedes inicializar el repositorio con un valor predeterminado si es necesario
+    }
 
     private val _servers = MutableLiveData<List<Server>>()
     val servers: LiveData<List<Server>>
@@ -21,11 +23,65 @@ class ServerViewModel : ViewModel() {
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+    // Mapa mutable para almacenar los servidores favoritos
+    private val favoriteServers = mutableMapOf<String, Boolean>()
+
     init {
         _servers.value = emptyList()
         _isLoading.value = false
+
+        viewModelScope.launch {
+            try {
+                val favoriteServers = serverRepository.fetchFavoriteServers()
+                addFavoriteServersToList(favoriteServers)
+            } catch (e: Exception) {
+                Log.e("ServerViewModel", "Error fetching favorite servers", e)
+            }
+        }
     }
 
+    // Función para agregar un servidor a favoritos
+    fun addServerToFavorites(server: Server) {
+        viewModelScope.launch {
+            try {
+                val success = serverRepository.addServerToFavorites(server)
+                if (success) {
+                    favoriteServers[server.ip ?: ""] = true
+                    updateServerInList(server)
+                    Log.d("ServerViewModel", "Server added to favorites successfully")
+                } else {
+                    Log.e("ServerViewModel", "Failed to add server to favorites")
+                }
+            } catch (e: Exception) {
+                Log.e("ServerViewModel", "Error adding server to favorites", e)
+            }
+        }
+    }
+
+    // Función para eliminar un servidor de favoritos
+    fun removeServerFromFavorites(server: Server) {
+        viewModelScope.launch {
+            try {
+                val success = serverRepository.removeServerFromFavorites(server)
+                if (success) {
+                    favoriteServers.remove(server.ip)
+                    updateServerInList(server)
+                    Log.d("ServerViewModel", "Server removed from favorites successfully")
+                } else {
+                    Log.e("ServerViewModel", "Failed to remove server from favorites")
+                }
+            } catch (e: Exception) {
+                Log.e("ServerViewModel", "Error removing server from favorites", e)
+            }
+        }
+    }
+
+    // Función para verificar si un servidor es favorito
+    fun isServerFavorite(ip: String): Boolean {
+        return favoriteServers[ip] ?: false
+    }
+
+    // Función para refrescar la lista de servidores
     fun refreshServers() {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -74,6 +130,7 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+    // Función para editar un servidor
     fun editServer(server: Server, newIp: String) {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -86,6 +143,7 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+    // Función para agregar un servidor
     fun addServer(ip: String, onComplete: () -> Unit) {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -102,6 +160,7 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+    // Función para eliminar un servidor
     fun deleteServer(ip: String) {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -118,9 +177,27 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+    // Función para actualizar un servidor en la lista
+    private fun updateServerInList(server: Server) {
+        val currentServers = _servers.value?.toMutableList() ?: return
+        val index = currentServers.indexOfFirst { it.ip == server.ip }
+        if (index != -1) {
+            currentServers[index] = server
+            _servers.postValue(currentServers)
+        }
+    }
+
+    // Función para agregar un servidor a la lista
     private fun addServerToList(server: Server) {
         val currentServers = _servers.value?.toMutableList() ?: mutableListOf()
         currentServers.add(server)
+        _servers.postValue(currentServers)
+    }
+
+    // Función para agregar servidores favoritos a la lista
+    private fun addFavoriteServersToList(servers: List<Server>) {
+        val currentServers = _servers.value?.toMutableList() ?: mutableListOf()
+        currentServers.addAll(servers)
         _servers.postValue(currentServers)
     }
 }
