@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <!-- Fondo de la actividad -->
+
         <ImageView
 
             android:layout_width="match_parent"
@@ -18,14 +20,53 @@
             android:scaleType="centerCrop"
             android:background="@android:color/transparent" />
 
+        <!-- RecyclerView para mostrar la lista de servidores -->
+
         <ImageView
             android:id="@+id/topBorderImageView"
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="-1dp"
             android:scaleType="fitXY"
             android:src="@drawable/header" />
-        <!-- RecyclerView para mostrar la lista de servidores -->
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="255dp"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="676dp"
+            android:background="@drawable/minecraft_button_background"
+            android:fontFamily="@font/minecraft_font"
+            android:hint="Buscar por hostname"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
+
+        <Spinner
+            android:id="@+id/filterSpinner"
+            android:layout_width="102dp"
+            android:layout_height="44dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="23dp"
+            android:layout_marginBottom="675dp"
+            android:layout_toEndOf="@+id/searchEditText"
+            android:background="@drawable/minecraft_button_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_below="@id/topBorderImageView"
             android:fontFamily="@font/minecraft_font"

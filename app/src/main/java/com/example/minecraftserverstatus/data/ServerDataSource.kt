@@ -1,14 +1,23 @@
 package com.example.minecraftserverstatus.data
 
+import android.content.Context
 import android.util.Log
+import com.example.minecraftserverstatus.data.dbLocal.AppDataBase
+import com.example.minecraftserverstatus.data.dbLocal.ServerDAO
+import com.example.minecraftserverstatus.data.dbLocal.ServerLocal
 import com.example.minecraftserverstatus.model.Server
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ServerDataSource {
+class ServerDataSource(private val context: Context) {
+
+    private val serverDao: ServerDAO by lazy { AppDataBase.getInstance(context).serverDao() }
+
     companion object {
         private const val API_BASE_URL = "https://api.mcsrvstat.us/"
         private val api: ServerAPI
@@ -27,7 +36,7 @@ class ServerDataSource {
             return auth.currentUser?.uid
         }
 
-        suspend fun getServer(ip: String): Server? {
+        suspend fun getServer(ip: String, context: Context): Server? {
             return try {
                 val result = api.getServer(ip)
                 Log.d("Demo_API_MINECRAFT", "Server DataSource exitoso")
@@ -38,7 +47,7 @@ class ServerDataSource {
             }
         }
 
-        suspend fun addServerToFavorites(server: Server): Boolean {
+        suspend fun addServerToFavorites(server: Server, context: Context): Boolean {
             val userId = getUserId() ?: return false
             return try {
                 db.collection("users").document(userId).collection("favorite_servers")
@@ -50,7 +59,7 @@ class ServerDataSource {
             }
         }
 
-        suspend fun removeServerFromFavorites(server: Server): Boolean {
+        suspend fun removeServerFromFavorites(server: Server, context: Context): Boolean {
             val userId = getUserId() ?: return false
             return try {
                 db.collection("users").document(userId).collection("favorite_servers")
@@ -62,7 +71,7 @@ class ServerDataSource {
             }
         }
 
-        suspend fun getFavoriteServers(): List<Server> {
+        suspend fun getFavoriteServers(context: Context): List<Server> {
             val userId = getUserId() ?: return emptyList()
             val favoriteServers = mutableListOf<Server>()
 
@@ -79,5 +88,27 @@ class ServerDataSource {
 
             return favoriteServers
         }
+
+        suspend fun getAllServersFromRoom(context: Context): List<ServerLocal> {
+            return withContext(Dispatchers.IO) {
+                val serverDao = AppDataBase.getInstance(context).serverDao()
+                serverDao.getAll()
+            }
+        }
+
+        suspend fun addServerToRoom(context: Context, server: ServerLocal) {
+            withContext(Dispatchers.IO) {
+                val serverDao = AppDataBase.getInstance(context).serverDao()
+                serverDao.insert(server)
+            }
+        }
+
+        suspend fun deleteServerFromRoom(context: Context, ip: String) {
+            withContext(Dispatchers.IO) {
+                val serverDao = AppDataBase.getInstance(context).serverDao()
+                serverDao.delete(ServerLocal(ip))
+            }
+        }
     }
 }
+

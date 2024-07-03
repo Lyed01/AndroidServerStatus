@@ -48,6 +48,8 @@ class ServerDetailDialog(context: Context, private val server: Server) : Dialog(
             append("Plugins:\n${server.plugins?.joinToString("\n") { "${it.name} - ${it.version}" } ?: "N/A"}\n")
             append("Mods:\n${server.mods?.joinToString("\n") { "${it.name} - ${it.version}" } ?: "N/A"}\n")
             append("Información:\n${server.info?.clean?.joinToString("\n") ?: "N/A"}\n")
+            append("isFav:\n${server.isFavorite.toString() ?: "N/A"}")
+
         }
 
         binding.serverDetailsTextview.text = serverDetails.toString().trim()

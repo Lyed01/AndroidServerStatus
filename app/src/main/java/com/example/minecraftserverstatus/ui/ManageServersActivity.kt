@@ -3,7 +3,12 @@ package com.example.minecraftserverstatus.ui
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -25,6 +30,7 @@ class ManageServersActivity : AppCompatActivity() {
     private lateinit var loadingGifDrawable: GifDrawable
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var filterSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,27 +38,64 @@ class ManageServersActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
 
-        // Inicializar SwipeRefreshLayout
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        // Initialize Spinner
+        filterSpinner = binding.filterSpinner
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.filter_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            filterSpinner.adapter = adapter
+        }
+
+        // Handle Spinner item selection
+        filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> viewModel.filterAllServers()
+                    1 -> viewModel.filterFavoriteServers()
+                    // Agrega más casos según tus opciones de Spinner
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // No hacer nada
+            }
+        }
+
+        // Initialize SwipeRefreshLayout
+        swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
-            // Aquí manejas la lógica de actualización al arrastrar hacia abajo
             viewModel.refreshServers()
         }
 
-        // Inicializar GifImageView y cargar el GIF de carga
-        loadingImageView = findViewById(R.id.loadingImageView)
+        // Initialize GifImageView and load loading GIF
+        loadingImageView = binding.loadingImageView
         loadingGifDrawable = GifDrawable(resources, R.drawable.squid)
-        loadingGifDrawable.setSpeed(2.0f) // Aumentar la velocidad del GIF
+        loadingGifDrawable.setSpeed(2.0f) // Aumentar velocidad del GIF
         loadingImageView.setImageDrawable(loadingGifDrawable)
 
-        // Configurar el RecyclerView con el adaptador y el ViewModel
+        // Configure RecyclerView with adapter and ViewModel
         serverAdapter = ServerAdapter(emptyList(), viewModel)
         binding.serversRecyclerView.apply {
             adapter = serverAdapter
             layoutManager = LinearLayoutManager(this@ManageServersActivity)
         }
 
-        // Configurar el botón para agregar servidor
+        // Configure search field
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val searchText = s.toString().trim()
+                viewModel.filterServersByHostname(searchText)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Configure add server button
         binding.addServerButton.setOnClickListener {
             mediaPlayer = MediaPlayer.create(this@ManageServersActivity, R.raw.minecraft_click)
             mediaPlayer.start()
@@ -61,54 +104,46 @@ class ManageServersActivity : AppCompatActivity() {
             startActivityForResult(intent, ADD_SERVER_REQUEST_CODE)
         }
 
-        // Observar cambios en la lista de servidores en el ViewModel y actualizar el adaptador
+        // Observe changes in server list from ViewModel
         viewModel.servers.observe(this, Observer { servers ->
             serverAdapter.updateData(servers)
-            // Detener el indicador de actualización
             swipeRefreshLayout.isRefreshing = false
         })
 
-        // Observar estado de carga
+        // Observe loading state
         viewModel.isLoading.observe(this, Observer { isLoading ->
             if (isLoading) {
-                // Mostrar GIF de carga
                 loadingImageView.visibility = View.VISIBLE
                 loadingGifDrawable.start()
             } else {
-                // Ocultar GIF de carga
                 loadingImageView.visibility = View.GONE
                 loadingGifDrawable.stop()
             }
         })
 
-        // Verificar la autenticación del usuario al iniciar la actividad
+        // Check user authentication on activity start
         checkUser()
     }
 
     private fun checkUser() {
         val firebaseUser = auth.currentUser
         if (firebaseUser == null) {
-            // Si el usuario no está autenticado, redirigir a com.example.minecraftserverstatus.ui.LoginActivity
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }
 
-    // Manejar el resultado de la actividad AddServerActivity
-    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
+    // Handle AddServerActivity result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_SERVER_REQUEST_CODE && resultCode == RESULT_OK) {
             data?.let {
                 val ip = it.getStringExtra("ip") ?: return@let
 
-                // Mostrar GIF de carga
                 loadingImageView.visibility = View.VISIBLE
                 loadingGifDrawable.start()
 
-                // Agregar el servidor al ViewModel
                 viewModel.addServer(ip) {
-                    // Ocultar GIF de carga al completar
                     loadingImageView.visibility = View.GONE
                     loadingGifDrawable.stop()
                 }

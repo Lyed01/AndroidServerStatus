@@ -1,5 +1,6 @@
 package com.example.minecraftserverstatus.model
 
+import com.example.minecraftserverstatus.data.dbLocal.ServerLocal
 import com.google.gson.annotations.SerializedName
 
 data class Server(
@@ -97,6 +98,22 @@ data class Server(
         val html: List<String>
     ) {
         constructor() : this(emptyList(), emptyList(), emptyList())
+    }
+
+    fun toServerLocal(): ServerLocal {
+        return ServerLocal(
+            ip = this.ip ?: "",
+            online = this.online,
+            port = this.port,
+            hostname = this.hostname,
+            version = this.version,
+            icon = this.icon,
+            software = this.software,
+            gamemode = this.gamemode,
+            serverid = this.serverid,
+            eulaBlocked = this.eulaBlocked,
+            isFavorite = this.isFavorite
+        )
     }
 
     // Constructor sin argumentos para la clase Server principal

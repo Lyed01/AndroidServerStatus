@@ -17,8 +17,12 @@
     <string name="previous">Previous</string>
     <string name="MinecraftServerStatus">Minecraft Server Status</string>
     <string name="default_web_client_id">699462307354-6b9ebgu56qe0q5dlo9lsh40cctpog1km.apps.googleusercontent.com</string>
-
-
+    <string-array name="filter_options">
+        <item>All</item>
+        <item>Favorites</item>
+        <item>Most Players</item>
+        <item>Least Players</item>
+    </string-array>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

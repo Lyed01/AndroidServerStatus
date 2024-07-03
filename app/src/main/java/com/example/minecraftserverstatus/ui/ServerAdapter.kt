@@ -16,7 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.minecraftserverstatus.R
 import com.example.minecraftserverstatus.model.Server
 
-class ServerAdapter(private var servers: List<Server>, private val viewModel: ServerViewModel) : RecyclerView.Adapter<ServerAdapter.ServerViewHolder>() {
+class ServerAdapter(
+    private var servers: List<Server>,
+    private val viewModel: ServerViewModel
+) : RecyclerView.Adapter<ServerAdapter.ServerViewHolder>() {
+
+    private lateinit var context: Context
+    private var originalServers: List<Server> = servers.toList() // Lista original de servidores
 
     class ServerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val serverIcon: ImageView = view.findViewById(R.id.server_icon_imageview)
@@ -27,8 +33,6 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
         val motdTextView: TextView = view.findViewById(R.id.motd_textview)
         val favoriteButton: ImageView = view.findViewById(R.id.favoriteButton)
     }
-
-    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerViewHolder {
         context = parent.context
@@ -85,6 +89,19 @@ class ServerAdapter(private var servers: List<Server>, private val viewModel: Se
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newServers: List<Server>) {
         servers = newServers
+        originalServers = newServers.toList() // Actualizar la lista original también
+        notifyDataSetChanged()
+    }
+
+    fun filterServers(filterText: String) {
+        servers = if (filterText.isEmpty()) {
+            originalServers.toList() // Mostrar la lista original si el texto de filtro está vacío
+        } else {
+            originalServers.filter { server ->
+                server.hostname?.contains(filterText, ignoreCase = true) ?: false ||
+                        server.ip.contains(filterText, ignoreCase = true)
+            }
+        }
         notifyDataSetChanged()
     }
 
