@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -32,6 +33,9 @@ class ManageServersActivity : AppCompatActivity() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var filterSpinner: Spinner
 
+    private var activeFilters: MutableList<Int> = mutableListOf() // Lista para almacenar las posiciones de los filtros activos
+    private var toast: Toast? = null // Variable para almacenar el Toast activo
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageServersBinding.inflate(layoutInflater)
@@ -52,10 +56,19 @@ class ManageServersActivity : AppCompatActivity() {
         // Handle Spinner item selection
         filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                updateActiveFilters(position)
+                showToastMessage() // Llama a showToastMessage() sin argumentos
+
                 when (position) {
                     0 -> viewModel.filterAllServers()
                     1 -> viewModel.filterFavoriteServers()
-                    // Agrega más casos según tus opciones de Spinner
+                    2 -> viewModel.filterServersByPlayerCount(false)
+                    3 -> viewModel.filterServersByPlayerCount(true)
+                }
+
+                // Si se selecciona un filtro de jugadores, verifica si también está activo el filtro de favoritos
+                if ((position == 2 || position == 3) && activeFilters.contains(1)) {
+                    viewModel.filterFavoriteServers() // Aplica filtro de favoritos también
                 }
             }
 
@@ -132,6 +145,65 @@ class ManageServersActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    // Método para mostrar el mensaje Toast con los filtros activos
+    // Método para mostrar el mensaje Toast con los filtros activos
+    // Método para mostrar el mensaje Toast con los filtros activos
+    private fun showToastMessage() {
+        toast?.cancel() // Cancelar el Toast anterior si existe
+
+        val activeFiltersNames = mutableListOf<String>()
+
+        // Verificar y agregar al mensaje los filtros activos
+        if (activeFilters.contains(1)) {
+            activeFiltersNames.add("Favorites")
+        }
+        if (activeFilters.contains(2)) {
+            activeFiltersNames.add("Player count ascending")
+        }
+        if (activeFilters.contains(3)) {
+            activeFiltersNames.add("Player count descending")
+        }
+
+        // Construir el mensaje con todos los filtros activos
+        val message = when {
+            activeFiltersNames.isEmpty() -> "Cleaned Filters"
+            else -> "Active Filters: ${activeFiltersNames.joinToString(", ")}"
+        }
+
+        toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        toast?.show()
+    }
+
+    // Método para actualizar las posiciones activas en el Spinner
+    // Método para actualizar las posiciones activas en el Spinner
+    private fun updateActiveFilters(position: Int) {
+        // Limpiar todos los filtros activos si se selecciona "all"
+        if (position == 0) {
+            activeFilters.clear()
+        } else {
+            // Si se selecciona asc o desc, asegúrate de que solo uno esté activo a la vez
+            if (position == 2 || position == 3) {
+                if (activeFilters.contains(2) || activeFilters.contains(3)) {
+                    activeFilters.remove(2)
+                    activeFilters.remove(3)
+                }
+            }
+
+            // Si la posición no está en la lista, agrégala
+            if (!activeFilters.contains(position)) {
+                activeFilters.add(position)
+            } else {
+                // Si ya está en la lista, quítala para desactivarla
+                activeFilters.remove(position)
+            }
+        }
+
+        // Mostrar el mensaje actualizado de filtros activos
+        showToastMessage()
+    }
+
+
 
     // Handle AddServerActivity result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

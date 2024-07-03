@@ -102,16 +102,24 @@ data class Server(
 
     fun toServerLocal(): ServerLocal {
         return ServerLocal(
-            ip = this.ip ?: "",
+            ip = this.ip,
             online = this.online,
             port = this.port,
             hostname = this.hostname,
+            debug = this.debug,
             version = this.version,
+            protocol = this.protocol,
             icon = this.icon,
             software = this.software,
+            map = this.map,
             gamemode = this.gamemode,
             serverid = this.serverid,
             eulaBlocked = this.eulaBlocked,
+            motd = this.motd,
+            players = this.players,
+            plugins = this.plugins,
+            mods = this.mods,
+            info = this.info,
             isFavorite = this.isFavorite
         )
     }

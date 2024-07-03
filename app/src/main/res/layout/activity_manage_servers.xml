@@ -12,6 +12,7 @@
 
         <!-- Fondo de la actividad -->
 
+
         <ImageView
 
             android:layout_width="match_parent"
@@ -21,6 +22,7 @@
             android:background="@android:color/transparent" />
 
         <!-- RecyclerView para mostrar la lista de servidores -->
+
 
         <ImageView
             android:id="@+id/topBorderImageView"
@@ -35,12 +37,12 @@
             android:id="@+id/searchEditText"
             android:layout_width="255dp"
             android:layout_height="44dp"
+            android:layout_alignBottom="@+id/topBorderImageView"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="11dp"
             android:layout_marginTop="11dp"
-            android:layout_marginBottom="676dp"
+            android:layout_marginBottom="6dp"
             android:background="@drawable/minecraft_button_background"
             android:fontFamily="@font/minecraft_font"
             android:hint="Buscar por hostname"
@@ -51,21 +53,26 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black" />
 
+
         <Spinner
             android:id="@+id/filterSpinner"
-            android:layout_width="102dp"
-            android:layout_height="44dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/topBorderImageView"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="23dp"
-            android:layout_marginBottom="675dp"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="6dp"
             android:layout_toEndOf="@+id/searchEditText"
             android:background="@drawable/minecraft_button_background"
+            android:foregroundTint="#000000"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_below="@id/topBorderImageView"
@@ -82,14 +89,15 @@
         <RelativeLayout
 
 
+            android:id="@+id/relativeLayout2"
             android:layout_width="wrap_content"
             android:layout_height="53dp"
+            android:layout_below="@+id/filterSpinner"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="60dp"
-            android:layout_marginTop="632dp"
+            android:layout_marginTop="576dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="46dp"
             android:gravity="center_horizontal">

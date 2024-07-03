@@ -1,6 +1,7 @@
 package com.example.minecraftserverstatus.ui
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -21,8 +22,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: ImageButton
     private lateinit var googleSignInButton: ImageButton
+    private lateinit var rickyButton: ImageButton
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,22 @@ class LoginActivity : AppCompatActivity() {
             val intent = googleSignInClient.signInIntent
             startActivityForResult(intent, 100)
         }
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.ricky)
+        rickyButton = findViewById(R.id.rickybutton)
+
+        rickyButton.setOnClickListener {
+            playClickSound() // Reproducir sonido al hacer clic en el botón
+        }
+
+
+        // Configurar GoogleSignInButton
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release() // Liberar recursos del MediaPlayer
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -61,8 +80,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = accountTask.getResult(ApiException::class.java)
                 firebaseAuthWithGoogleAccount(account)
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("DEMO-API", "onActivityResult: ${e.message}")
             }
         }
@@ -89,5 +107,10 @@ class LoginActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this@LoginActivity, "Login fallido...", Toast.LENGTH_LONG).show()
             }
+    }
+
+    // Método para reproducir el sonido
+    private fun playClickSound() {
+        mediaPlayer.start()
     }
 }

@@ -7,16 +7,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.minecraftserverstatus.data.ServerRepository
-import com.example.minecraftserverstatus.data.dbLocal.ServerLocal
 import com.example.minecraftserverstatus.data.dbLocal.toServer
 import com.example.minecraftserverstatus.model.Server
 import kotlinx.coroutines.launch
-
 class ServerViewModel(application: Application) : AndroidViewModel(application) {
 
     private val serverRepository: ServerRepository = ServerRepository(application)
     private var originalServers: List<Server> = emptyList() // Lista original de servidores
     private var currentFilter: String? = null // Filtro actual aplicado
+    var sortByPlayersAsc: Boolean? = null
+        private set
+
 
     private val _servers = MutableLiveData<List<Server>>()
     val servers: LiveData<List<Server>>
@@ -56,6 +57,13 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
                     } else {
                         // Si el servidor local no es un favorito, agregarlo con isFavorite = false
                         combinedServers.add(localServer.toServer().copy(isFavorite = false))
+                    }
+                }
+
+                // Agregar servidores favoritos que no están en la base de datos local
+                favoriteServersFromFirebase.forEach { favoriteServer ->
+                    if (combinedServers.none { it.ip == favoriteServer.ip }) {
+                        combinedServers.add(favoriteServer.copy(isFavorite = true))
                     }
                 }
 
@@ -152,6 +160,10 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
                             info = updatedServer.info ?: server.info
                         )
 
+                        // Update Room database with the updated server
+                        serverRepository.addServerToRoom(updatedServerWithDefaults.toServerLocal())
+
+                        // Update _servers LiveData
                         val updatedList = _servers.value?.toMutableList() ?: mutableListOf()
                         updatedList[index] = updatedServerWithDefaults
                         _servers.postValue(updatedList)
@@ -167,6 +179,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+
 
     // Función para editar un servidor
     fun editServer(server: Server, newIp: String) {
@@ -187,13 +200,12 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
             _isLoading.postValue(true)
 
             try {
-                val serverroom = serverRepository.getServer(ip)
-                val serverLocal = serverroom?.toServerLocal()
+                val server = serverRepository.getServer(ip)
+                val serverLocal = server?.toServerLocal()
                 if (serverLocal != null) {
                     serverRepository.addServerToRoom(serverLocal)
                 }
 
-                val server = serverRepository.getServer(ip)
                 server?.let {
                     it.isFavorite = isServerFavorite(it.ip ?: "")
                     addServerToList(it)
@@ -206,8 +218,6 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
-
-    // Función para eliminar un servidor
     fun deleteServer(ip: String) {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -234,6 +244,8 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
+
+    // Función para actualizar un servidor en la lista
     // Función para actualizar un servidor en la lista
     private fun updateServerInList(server: Server) {
         val currentServers = _servers.value?.toMutableList() ?: return
@@ -249,50 +261,66 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         val currentServers = _servers.value?.toMutableList() ?: mutableListOf()
         currentServers.add(server)
         _servers.postValue(currentServers)
+        originalServers = originalServers + server // Actualizar originalServers
     }
 
 
     fun filterServersByHostname(query: String?) {
-        val filteredList = if (query.isNullOrBlank()) {
-            originalServers.toList() // Si no hay filtro, mostrar todos los servidores originales
-        } else {
-            originalServers.filter { server ->
-                server.hostname?.contains(query, ignoreCase = true) == true ||
-                        server.ip?.contains(query, ignoreCase = true) == true
-            }
-        }
+        val filteredList = applyHostnameFilter(query)
         _servers.postValue(filteredList)
     }
 
+    // Aplicar filtro de búsqueda por hostname
+    private fun applyHostnameFilter(query: String?): List<Server> {
+        return if (query.isNullOrBlank()) {
+            originalServers // Si no hay consulta, devuelve la lista original
+        } else {
+            originalServers.filter { server ->
+                val hostname = server.hostname?.toLowerCase() ?: ""
+                hostname.contains(query.toLowerCase())
+            }
+        }
+    }
+
+
+    // Filtrar todos los servidores
     fun filterAllServers() {
-        viewModelScope.launch {
-            _isLoading.postValue(true)
-            try {
-                val currentServers = originalServers
-                _servers.postValue(currentServers)
-            } catch (e: Exception) {
-                Log.e("ServerViewModel", "Error filtering all servers", e)
-            } finally {
-                _isLoading.postValue(false)
-            }
-        }
+        currentFilter = null
+        applyCurrentFilters()
     }
 
+    // Filtrar por servidores favoritos
     fun filterFavoriteServers() {
-        viewModelScope.launch {
-            _isLoading.postValue(true)
-            try {
-                val favoriteServers = originalServers.filter { isServerFavorite(it.ip ?: "") }
-                _servers.postValue(favoriteServers)
-            } catch (e: Exception) {
-                Log.e("ServerViewModel", "Error filtering favorite servers", e)
-            } finally {
-                _isLoading.postValue(false)
-            }
-        }
+        currentFilter = "favorites"
+        applyCurrentFilters()
     }
 
-    //IMPLEMENTAR BUSQUEDA Y FILTRO A LA VEZ Y FILTROS SOBRE SERVERS QUE NO ESTEN EN ROOM NI FAVORITOS
+    // Filtrar por cantidad de jugadores ascendente o descendente
+    fun filterServersByPlayerCount(ascending: Boolean?) {
+        sortByPlayersAsc = ascending
+        applyCurrentFilters()
+    }
+
+    private fun applyCurrentFilters() {
+        var filteredList = originalServers.toList() // Empieza con la lista completa
+
+        // Aplica filtro de favoritos si está activo
+        if (currentFilter == "favorites") {
+            filteredList = filteredList.filter { isServerFavorite(it.ip ?: "") }
+        }
+
+        // Aplica filtro ascendente o descendente de jugadores online si está activo
+        sortByPlayersAsc?.let { ascending ->
+            filteredList = if (ascending) {
+                filteredList.sortedBy { it.players?.online }
+            } else {
+                filteredList.sortedByDescending { it.players?.online }
+            }
+        }
 
 
+
+        // Actualiza la lista filtrada en LiveData
+        _servers.postValue(filteredList)
+    }
 }

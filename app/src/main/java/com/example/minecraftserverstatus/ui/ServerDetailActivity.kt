@@ -50,6 +50,8 @@ class ServerDetailDialog(context: Context, private val server: Server) : Dialog(
             append("Información:\n${server.info?.clean?.joinToString("\n") ?: "N/A"}\n")
             append("isFav:\n${server.isFavorite.toString() ?: "N/A"}")
 
+
+
         }
 
         binding.serverDetailsTextview.text = serverDetails.toString().trim()

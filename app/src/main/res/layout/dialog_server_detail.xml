@@ -9,8 +9,8 @@
 
 
     <LinearLayout
-        android:layout_width="326dp"
-        android:layout_height="545dp"
+        android:layout_width="325dp"
+        android:layout_height="638dp"
         android:background="@drawable/backgroundgrass"
         android:orientation="vertical"
         android:padding="16dp"

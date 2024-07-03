@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <!-- LoginActivity -->
+        <!-- com.example.minecraftserverstatus.ui.com.example.minecraftserverstatus.ui.LoginActivity -->
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true">
