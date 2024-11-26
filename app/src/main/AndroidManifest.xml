@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.minecraftserverstatus">
+    package="com.lyed.minecraftserverstatus">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
-        android:icon="@drawable/default_server_icon"
+        android:icon="@drawable/eye"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/default_server_icon"
+        android:roundIcon="@drawable/eye"
         android:supportsRtl="true"
         android:theme="@style/Theme.MinecraftServerStatus"
         tools:ignore="ExtraText"
         tools:targetApi="tiramisu">
 
+
+
         <!-- SplashActivity -->
         <activity
-            android:name=".ui.SplashActivity"
+            android:name="com.lyed.minecraftserverstatus.ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,22 +29,22 @@
             </intent-filter>
         </activity>
 
-        <!-- com.example.minecraftserverstatus.ui.com.example.minecraftserverstatus.ui.LoginActivity -->
+
         <activity
-            android:name=".ui.LoginActivity"
+            android:name="com.lyed.minecraftserverstatus.ui.LoginActivity"
             android:exported="true">
         </activity>
 
 
         <!-- AddServerActivity -->
         <activity
-            android:name=".ui.AddServerActivity"
+            android:name="com.lyed.minecraftserverstatus.ui.AddServerActivity"
             android:exported="true"
             android:theme="@style/CustomDialogTheme" />
 
         <!-- ManageServersActivity -->
         <activity
-            android:name=".ui.ManageServersActivity"
+            android:name="com.lyed.minecraftserverstatus.ui.ManageServersActivity"
             android:exported="true"
             android:label="@string/title_activity_manage_servers" />
 

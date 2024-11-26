@@ -12,9 +12,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.example.minecraftserverstatus.R
-import com.example.minecraftserverstatus.databinding.DialogServerDetailBinding
 import com.example.minecraftserverstatus.model.Server
+import com.lyed.minecraftserverstatus.R
+import com.lyed.minecraftserverstatus.databinding.DialogServerDetailBinding
 
 class ServerDetailDialog(context: Context, private val server: Server) : Dialog(context) {
     private lateinit var mediaPlayer: MediaPlayer

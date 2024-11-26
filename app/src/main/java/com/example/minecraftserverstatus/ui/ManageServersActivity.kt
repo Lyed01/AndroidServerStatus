@@ -15,9 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.minecraftserverstatus.R
-import com.example.minecraftserverstatus.databinding.ActivityManageServersBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.lyed.minecraftserverstatus.R
+import com.lyed.minecraftserverstatus.databinding.ActivityManageServersBinding
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
 

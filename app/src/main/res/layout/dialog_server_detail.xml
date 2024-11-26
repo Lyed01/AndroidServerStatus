@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="325dp"
-        android:layout_height="638dp"
+        android:layout_height="474dp"
         android:background="@drawable/backgroundgrass"
         android:orientation="vertical"
         android:padding="16dp"
@@ -39,15 +39,20 @@
             android:layout_gravity="center_horizontal"
             android:src="@drawable/default_server_icon" />
 
-        <TextView
-            android:id="@+id/server_details_textview"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/minecraft_font"
-            android:text="Detalles del servidor"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:layout_height="257dp">
+
+            <TextView
+                android:id="@+id/server_details_textview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/minecraft_font"
+                android:text="Detalles del servidor"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </ScrollView>
 
         <RelativeLayout
             android:layout_width="293dp"

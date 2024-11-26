@@ -13,8 +13,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.minecraftserverstatus.R
 import com.example.minecraftserverstatus.model.Server
+import com.lyed.minecraftserverstatus.R
 
 class ServerAdapter(
     private var servers: List<Server>,
