@@ -1,0 +1,92 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_card_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="16dp"
+    android:elevation="4dp">
+
+
+    <LinearLayout
+        android:layout_width="325dp"
+        android:layout_height="474dp"
+        android:background="@drawable/backgroundgrass"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:scaleType="centerCrop">
+
+
+        <!-- Icono del servidor -->
+
+        <!-- Detalles del servidor -->
+
+        <!-- RelativeLayout para ImageButton y TextView -->
+        <TextView
+            android:id="@+id/title_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="1dp"
+            android:fontFamily="@font/minecraft_font"
+            android:text="Server Detail"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/server_icon_imageview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/default_server_icon" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="257dp">
+
+            <TextView
+                android:id="@+id/server_details_textview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/minecraft_font"
+                android:text="Detalles del servidor"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </ScrollView>
+
+        <RelativeLayout
+            android:layout_width="293dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal">
+
+            <!-- ImageButton -->
+            <ImageButton
+                android:id="@+id/close_button"
+                style="@style/MinecraftImageButtonStyle"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:contentDescription="Cerrar" />
+
+            <!-- TextView encima del botón -->
+            <TextView
+                android:id="@+id/text_above_button"
+                android:layout_width="88dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/close_button"
+                android:layout_alignEnd="@+id/close_button"
+                android:layout_alignBottom="@id/close_button"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:fontFamily="@font/minecraft_font"
+                android:gravity="center"
+                android:shadowColor="#80000000"
+                android:shadowDx="3"
+                android:shadowDy="2"
+                android:shadowRadius=".2"
+                android:text="Close"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

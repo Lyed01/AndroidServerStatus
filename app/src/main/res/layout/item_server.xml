@@ -1,0 +1,124 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/item_background"
+    android:layout_marginTop="16dp">
+
+
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Add to Favorites"
+        android:padding="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_star_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ip_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_background2"
+        android:fontFamily="@font/minecraft_font"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="IP DEL SERVER"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <ImageView
+        android:id="@+id/server_icon_imageview"
+        android:layout_width="97dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/item_background2"
+        android:padding="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_server_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ip_textview" />
+
+    <TextView
+        android:id="@+id/players_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/item_background2"
+        android:fontFamily="@font/minecraft_font"
+        android:padding="8dp"
+        android:text="Online players"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/server_icon_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/version_textview" />
+
+    <TextView
+        android:id="@+id/address_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/item_background2"
+        android:fontFamily="@font/minecraft_font"
+        android:padding="8dp"
+        android:text="address"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/server_icon_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/ip_textview" />
+
+    <TextView
+        android:id="@+id/version_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/item_background2"
+        android:fontFamily="@font/minecraft_font"
+        android:padding="8dp"
+        android:text="Version"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/server_icon_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/address_textview" />
+
+    <TextView
+        android:id="@+id/motd_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/item_background2"
+        android:fontFamily="@font/minecraft_font"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="MOTD"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/players_textview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

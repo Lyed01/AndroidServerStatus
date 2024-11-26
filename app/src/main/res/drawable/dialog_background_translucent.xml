@@ -1,0 +1,5 @@
+<!-- dialog_background_translucent.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#80000000" /> <!-- Color semitransparente -->
+    <corners android:radius="20dp" /> <!-- Esquinas redondeadas -->
+</shape>
